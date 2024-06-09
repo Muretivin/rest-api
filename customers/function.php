@@ -209,5 +209,44 @@ function updateCustomer($customerInput, $customerParams){
     
 }
 
+function deleteCustomer($customerParams){
+    global $conn;
+
+    if(!isset($customerParams['id'])){
+
+        return error422('customer id not found in this url');
+    }
+    elseif($customerParams['id'] == null){
+
+        return error422('Enter the customer id');
+
+    }
+
+    $customerId = mysqli_real_escape_string($conn, $customerParams['id']);
+
+    $query = "DELETE FROM customers WHERE id ='$customerId' LIMIT 1 ";
+    $result = mysqli_query($conn, $query);
+
+    if($result){
+        $data = [
+            'status' => 204,
+            'message' => 'customer deleted successfully',
+        ];
+        header("HTTP/1.0 204 Deleted");
+        return json_encode($data);
+
+    }else{
+        $data = [
+            'status' => 404,
+            'message' => 'customer id not found',
+        ];
+        header("HTTP/1.0 500 not found");
+        return json_encode($data);
+
+    }
+
+
+}
+
 
 ?>
